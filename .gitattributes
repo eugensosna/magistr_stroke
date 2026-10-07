@@ -1,0 +1,11 @@
+* text=auto eol=lf
+*.adoc   text diff=asciidoc
+*.lua    text
+*.py     text diff=python
+*.toml   text
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.svg    text
+*.pdf    binary
+*.docx   binary

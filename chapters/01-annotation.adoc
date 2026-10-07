@@ -1,0 +1,25 @@
+== Анотація
+
+{student} {thesis-title}.
+Кваліфікаційна робота магістра за спеціальністю {specialty-code} {specialty}.
+Керівник {supervisor}
+{city}: {university}, {year}.
+
+// Обсяг роботи, кількість рисунків, таблиць, джерел, додатків.
+Робота містить 00 с., 0 рис., 0 табл., 00 джерел, 0 додатки.
+
+// Короткий зміст роботи: мета, об'єкт, методи, результати, новизна.
+Текст анотації українською мовою.
+
+Ключові слова: СЛОВО, СЛОВО, СЛОВО, СЛОВО, СЛОВО.
+
+== Abstract
+
+Surname I. Thesis title.
+Master's qualification thesis, specialty 121 "Software Engineering".
+Supervisor Surname I.
+Zaporizhzhia: Zaporizhzhia National University, 2026.
+
+Abstract text in English.
+
+Keywords: WORD, WORD, WORD, WORD, WORD.

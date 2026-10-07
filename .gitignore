@@ -1,0 +1,7 @@
+# Результати збірки (генеруються командою make)
+/build/
+# Тимчасові файли Word/LibreOffice
+~$*
+.~lock.*#
+*.tmp
+.DS_Store

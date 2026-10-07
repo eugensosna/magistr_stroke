@@ -1,0 +1,57 @@
+// Титульний аркуш. Дані беруться з config/attributes.adoc.
+// Ролі абзаців: [.center] (за замовчуванням), [.title], [.right], [.left].
+// Порожній рядок на титульному аркуші — абзац {nbsp}.
+
+[.titlepage]
+--
+МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ +
+{university} +
+{faculty} +
+{department}
+
+{nbsp}
+
+{nbsp}
+
+{nbsp}
+
+[.title]
+{work-type} +
+{degree}
+
+на тему: «{thesis-title}»
+
+{nbsp}
+
+{nbsp}
+
+[.right]
+{student-sex-verb}: студент {course} курсу, групи {group} +
+спеціальності {specialty-code} {specialty} +
+освітньо-професійної програми {program} +
+{student}
+
+{nbsp}
+
+[.right]
+Керівник: {supervisor-title} +
+{supervisor}
+
+{nbsp}
+
+[.right]
+Рецензент: {reviewer-title} +
+{reviewer}
+
+{nbsp}
+
+{nbsp}
+
+{nbsp}
+
+{nbsp}
+
+{nbsp}
+
+{city} – {year}
+--

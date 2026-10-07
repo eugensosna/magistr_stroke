@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="430" viewBox="0 0 1000 430">
+<defs><marker id="a" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto"><path d="M0,0 L12,5 L0,10 z" fill="black"/></marker></defs>
+<rect width="1000" height="430" fill="white"/>
+<rect x="10" y="10" width="980" height="215" fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="4 4"/>
+<text x="20" y="34" font-family="Liberation Serif, Times New Roman, serif" font-size="17" font-style="italic">Пристрій пацієнта (обробка відео локально)</text>
+<rect x="30" y="70" width="150" height="110" fill="white" stroke="black" stroke-width="2"/>
+<text x="105.0" y="120.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">Веб-камера</text>
+<text x="105.0" y="142.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">(RGB-відео)</text>
+<rect x="225" y="70" width="200" height="110" fill="white" stroke="black" stroke-width="2"/>
+<text x="325.0" y="109.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">Виявлення кисті</text>
+<text x="325.0" y="131.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">та 21 ключової</text>
+<text x="325.0" y="153.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">точки</text>
+<rect x="470" y="70" width="220" height="110" fill="white" stroke="black" stroke-width="2"/>
+<text x="580.0" y="109.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">Обчислення</text>
+<text x="580.0" y="131.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">кінематичних</text>
+<text x="580.0" y="153.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">параметрів руху</text>
+<rect x="735" y="70" width="230" height="110" fill="white" stroke="black" stroke-width="2"/>
+<text x="850.0" y="109.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">Ігрова логіка,</text>
+<text x="850.0" y="131.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">візуальний і звуковий</text>
+<text x="850.0" y="153.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">зворотний зв’язок</text>
+<line x1="180" y1="125" x2="225" y2="125" stroke="black" stroke-width="2" marker-end="url(#a)"/>
+<line x1="425" y1="125" x2="470" y2="125" stroke="black" stroke-width="2" marker-end="url(#a)"/>
+<line x1="690" y1="125" x2="735" y2="125" stroke="black" stroke-width="2" marker-end="url(#a)"/>
+<rect x="470" y="290" width="220" height="90" fill="white" stroke="black" stroke-width="2"/>
+<text x="580.0" y="330.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">Хмарний сервіс:</text>
+<text x="580.0" y="352.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">журнал сеансів</text>
+<rect x="735" y="290" width="230" height="90" fill="white" stroke="black" stroke-width="2"/>
+<text x="850.0" y="330.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">Кабінет</text>
+<text x="850.0" y="352.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">фахівця з реабілітації</text>
+<line x1="580" y1="180" x2="580" y2="290" stroke="black" stroke-width="2" marker-end="url(#a)" stroke-dasharray="8 6"/>
+<line x1="690" y1="335" x2="735" y2="335" stroke="black" stroke-width="2" marker-end="url(#a)"/>
+<line x1="850" y1="290" x2="850" y2="180" stroke="black" stroke-width="2" marker-end="url(#a)" stroke-dasharray="8 6"/>
+<text x="590" y="245" font-family="Liberation Serif, Times New Roman, serif" font-size="16">показники</text>
+<text x="860" y="245" font-family="Liberation Serif, Times New Roman, serif" font-size="16">налаштування вправ</text>
+<rect x="30" y="290" width="150" height="90" fill="white" stroke="black" stroke-width="2"/>
+<text x="105.0" y="341.0" text-anchor="middle" font-family="Liberation Serif, Times New Roman, serif" font-size="18">Пацієнт</text>
+<line x1="850" y1="180" x2="850" y2="180" stroke="black" stroke-width="2" marker-end="url(#a)"/>
+<path d="M 850 225 L 850 250" stroke="none"/>
+<line x1="105" y1="290" x2="105" y2="180" stroke="black" stroke-width="2" marker-end="url(#a)"/>
+<text x="115" y="245" font-family="Liberation Serif, Times New Roman, serif" font-size="16">рухи кисті</text>
+</svg>
