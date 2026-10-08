@@ -18,6 +18,8 @@
 * [[[laver2017]]] Laver K. E., Lange B., George S. et al. Virtual reality for stroke rehabilitation. _Cochrane Database of Systematic Reviews_. 2017. Issue 11. Art. No. CD008349. DOI: 10.1002/14651858.CD008349.pub4.
 * [[[zhang2020]]] Zhang F., Bazarevsky V., Vakunov A. et al. MediaPipe Hands: on-device real-time hand tracking. arXiv:2006.10214. 2020. DOI: 10.48550/arXiv.2006.10214.
 * [[[feigin2022]]] Feigin V. L., Brainin M., Norrving B. et al. World Stroke Organization (WSO): Global Stroke Fact Sheet 2022. _International Journal of Stroke_. 2022. Vol. 17, No. 1. P. 18–29. DOI: 10.1177/17474930211065917.
+* [[[biddiss2007]]] Biddiss E. A., Chau T. T. Upper limb prosthesis use and abandonment: a survey of the last 25 years. _Prosthetics and Orthotics International_. 2007. Vol. 31, No. 3. P. 236–257. DOI: 10.1080/03093640600994581.
+* [[[garske2021]]] Garske C. A., Dyson M., Dupan S. et al. Serious games are not serious enough for myoelectric prosthetics. _JMIR Serious Games_. 2021. Vol. 9, No. 4. Art. e28079. DOI: 10.2196/28079.
 * [[[mathiowetz1985]]] Mathiowetz V., Volland G., Kashman N., Weber K. Adult norms for the Box and Block Test of manual dexterity. _American Journal of Occupational Therapy_. 1985. Vol. 39, No. 6. P. 386–391. DOI: 10.5014/ajot.39.6.386.
 * [[[lyle1981]]] Lyle R. C. A performance test for assessment of upper limb function in physical rehabilitation treatment and research. _International Journal of Rehabilitation Research_. 1981. Vol. 4, No. 4. P. 483–492. DOI: 10.1097/00004356-198112000-00001.
 * [[[langhorne2011]]] Langhorne P., Bernhardt J., Kwakkel G. Stroke rehabilitation. _The Lancet_. 2011. Vol. 377, No. 9778. P. 1693–1702. DOI: 10.1016/S0140-6736(11)60325-5.
