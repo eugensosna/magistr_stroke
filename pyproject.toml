@@ -1,0 +1,9 @@
+[project]
+name = "magistr"
+version = "0.1.0"
+description = "Збірка магістерської роботи: AsciiDoc -> DOCX/PDF за ДСТУ 3008:2015"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.uv]
+package = false

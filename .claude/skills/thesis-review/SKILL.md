@@ -8,12 +8,12 @@ description: Нормоконтроль і рецензування магіст
 ## 1. Автоматичні перевірки
 
 ```sh
-make check                # посилання, джерела, рисунки, таблиці
-make && make pdf          # збірка має пройти без WARN/ERROR від asciidoctor
+uv run build.py check     # посилання, джерела, рисунки, таблиці
+uv run build.py pdf       # збірка має пройти без WARN/ERROR від asciidoctor
 pdfinfo build/thesis.pdf | grep Pages
 ```
 
-Усі помилки `make check` виправте до подальшої перевірки.
+Усі помилки `uv run build.py check` виправте до подальшої перевірки.
 
 ## 2. Візуальна перевірка верстки
 

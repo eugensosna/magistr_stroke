@@ -1,6 +1,6 @@
 #!/bin/sh
 # Збірка роботи: AsciiDoc -> HTML (asciidoctor) -> DOCX (pandoc) -> пост-обробка.
-# Запускається в контейнері (make) або локально (make local), якщо встановлені
+# Запускається в контейнері (uv run build.py) або локально (uv run build.py local), якщо встановлені
 # asciidoctor, pandoc >= 3.1 і python3 >= 3.11.
 set -eu
 

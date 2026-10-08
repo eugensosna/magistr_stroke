@@ -10,20 +10,22 @@
 ## Швидкий старт
 
 ```sh
-make          # -> build/thesis.docx (збірка в контейнері podman/docker)
-make pdf      # -> build/thesis.pdf  (LibreOffice: оновлює зміст і номери сторінок)
-make html     # -> build/thesis-preview.html (швидкий перегляд у браузері)
-make check    # перевірка посилань, джерел, рисунків і таблиць
-make clean
+uv run build.py         # -> build/thesis.docx (збірка в контейнері podman/docker)
+uv run build.py pdf     # -> build/thesis.docx і build/thesis.pdf (LibreOffice: оновлює зміст і номери сторінок)
+uv run build.py html    # -> build/thesis-preview.html (швидкий перегляд у браузері)
+uv run build.py check   # перевірка посилань, джерел, рисунків і таблиць
+uv run build.py clean
 ```
 
-Нічого, крім `podman` або `docker` і `make`, встановлювати не потрібно: перший запуск
-збере образ `magistr-builder` з asciidoctor, pandoc і python. Без контейнера:
-`make local` (потрібні asciidoctor, pandoc ≥ 3.1, python ≥ 3.11).
+Потрібні лише [uv](https://docs.astral.sh/uv/) і `podman` або `docker`.
+Команди однакові для Linux, macOS і Windows (PowerShell або cmd, Docker Desktop з WSL 2).
+Перший запуск збере образ `magistr-builder` з asciidoctor, pandoc, python і LibreOffice (кілька хвилин).
+Рушій можна вибрати явно: `ENGINE=docker uv run build.py` (у PowerShell: `$env:ENGINE="docker"`).
+Без контейнера: `uv run build.py local` (потрібні asciidoctor, pandoc ≥ 3.1, sh).
 
 Під час першого відкриття `thesis.docx` Word запропонує **оновити поля**.
 Погодьтеся, і зміст заповниться номерами сторінок. Вручну зміст оновлюється так: Ctrl+A, потім F9.
-У LibreOffice: «Сервіс → Оновити → Оновити все». Можна також одразу скористатися `make pdf`.
+У LibreOffice: «Сервіс → Оновити → Оновити все». Можна також одразу скористатися `uv run build.py pdf`.
 
 ## Робота з AI-агентами
 
@@ -40,6 +42,8 @@ config/attributes.adoc    дані титульного аркуша (ПІБ, т
 config/format.toml        параметри оформлення: поля, шрифт, інтервал, відступи
 chapters/                 текст роботи, один файл на розділ
 images/                   рисунки
+build.py                  команди збірки (uv run build.py ...)
+Containerfile             образ з asciidoctor, pandoc, python і LibreOffice
 tools/                    конвеєр збірки (зазвичай змінювати не потрібно)
   build.sh                AsciiDoc -> HTML -> DOCX
   asciidoctor/dstu_converter.rb

@@ -7,15 +7,19 @@ LibreOffice — ні. Скрипт робить це без графічного
     python3 tools/lo_export.py build/thesis.docx build/thesis.pdf
     python3 tools/lo_export.py build/thesis.docx build/thesis-lo.docx
 
-Потрібен LibreOffice з модулем python3-uno (системний python).
+Потрібен LibreOffice з модулем python3-uno (системний python). Зазвичай
+запускається в контейнері: uv run build.py pdf.
 """
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
 import time
 
 import uno
+from pathlib import Path
+
 from com.sun.star.beans import PropertyValue
 
 
@@ -29,13 +33,17 @@ def main():
     src, *outs = sys.argv[1:]
     if not outs:
         sys.exit("використання: lo_export.py in.docx out.pdf [out.docx]")
-    profile = tempfile.mkdtemp(prefix="lo-profile-")
+    tmp = Path(tempfile.mkdtemp(prefix="lo-export-"))
+    # Копія, щоб не заважав файл блокування, якщо документ відкрито в редакторі
+    copy = tmp / Path(src).name
+    shutil.copyfile(src, copy)
     pipe = f"magistr{os.getpid()}"
     office = subprocess.Popen([
         "soffice", "--headless", "--invisible", "--nologo", "--norestore",
-        f"-env:UserInstallation=file://{profile}",
+        f"-env:UserInstallation={(tmp / 'profile').as_uri()}",
         f"--accept=pipe,name={pipe};urp;StarOffice.ComponentContext",
-    ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        env={**os.environ, "HOME": str(tmp)})
     try:
         local = uno.getComponentContext()
         resolver = local.ServiceManager.createInstanceWithContext(
@@ -52,8 +60,10 @@ def main():
         desktop = ctx.ServiceManager.createInstanceWithContext(
             "com.sun.star.frame.Desktop", ctx)
         doc = desktop.loadComponentFromURL(
-            uno.systemPathToFileUrl(os.path.abspath(src)), "_blank", 0,
+            uno.systemPathToFileUrl(str(copy)), "_blank", 0,
             (prop("Hidden", True),))
+        if doc is None:
+            sys.exit(f"LibreOffice не зміг відкрити {src}")
         # Двічі: після першого оновлення змісту може зсунутися нумерація сторінок
         for _ in range(2):
             doc.getTextFields().refresh()
@@ -75,7 +85,7 @@ def main():
         except Exception:
             pass
         office.wait(timeout=30)
-        subprocess.run(["rm", "-rf", profile])
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 if __name__ == "__main__":
