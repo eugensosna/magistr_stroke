@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" viewBox="0 0 1000 560" font-family="Liberation Serif, Times New Roman, serif" font-size="18">
+<defs><marker id="a" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto"><path d="M0,0 L12,5 L0,10 z" fill="black"/></marker></defs>
+<rect width="1000" height="560" fill="white"/>
+<g fill="white" stroke="black" stroke-width="2">
+<rect x="20" y="40" width="210" height="110"/>
+<rect x="270" y="40" width="210" height="110"/>
+<rect x="520" y="40" width="210" height="110"/>
+<rect x="770" y="40" width="210" height="110"/>
+<rect x="770" y="230" width="210" height="110"/>
+<rect x="520" y="230" width="210" height="110"/>
+<rect x="270" y="230" width="210" height="110"/>
+<rect x="20" y="230" width="210" height="110"/>
+<rect x="270" y="420" width="210" height="110"/>
+<rect x="770" y="420" width="210" height="110"/>
+</g>
+<g text-anchor="middle">
+<text x="125" y="89">Кадр вебкамери</text><text x="125" y="111">(RGB)</text>
+<text x="375" y="78">Ключові точки</text><text x="375" y="100">кисті</text><text x="375" y="122">(MediaPipe Hands)</text>
+<text x="625" y="89">Фільтрація</text><text x="625" y="111">координат (1€)</text>
+<text x="875" y="78">Ізотропні</text><text x="875" y="100">координати,</text><text x="875" y="122">нормування на s</text>
+<text x="875" y="268">Кінематичні</text><text x="875" y="290">показники</text><text x="875" y="312">φ, Φ, d, O, I</text>
+<text x="625" y="268">Калібрування,</text><text x="625" y="290">нормований</text><text x="625" y="312">показник u</text>
+<text x="375" y="279">Скінченний</text><text x="375" y="301">автомат вправи</text>
+<text x="125" y="268">Ігрова логіка,</text><text x="125" y="290">зворотний</text><text x="125" y="312">зв’язок</text>
+<text x="375" y="469">Адаптація</text><text x="375" y="491">складності</text>
+<text x="875" y="458">Показники</text><text x="875" y="480">сеансу</text><text x="875" y="502">(на сервер)</text>
+</g>
+<g stroke="black" stroke-width="2" fill="none" marker-end="url(#a)">
+<line x1="230" y1="95" x2="270" y2="95"/>
+<line x1="480" y1="95" x2="520" y2="95"/>
+<line x1="730" y1="95" x2="770" y2="95"/>
+<line x1="875" y1="150" x2="875" y2="230"/>
+<line x1="770" y1="285" x2="730" y2="285"/>
+<line x1="520" y1="285" x2="480" y2="285"/>
+<line x1="270" y1="285" x2="230" y2="285"/>
+<line x1="340" y1="340" x2="340" y2="420"/>
+<line x1="410" y1="420" x2="410" y2="340" stroke-dasharray="6 4"/>
+<line x1="930" y1="340" x2="930" y2="420"/>
+<polyline points="455,340 455,380 820,380 820,420"/>
+</g>
+<text x="300" y="386" font-size="16" text-anchor="end" font-style="italic">результати</text>
+<text x="300" y="404" font-size="16" text-anchor="end" font-style="italic">спроб</text>
+<text x="420" y="404" font-size="16" font-style="italic">θ<tspan baseline-shift="sub" font-size="12">g</tspan>, t<tspan baseline-shift="sub" font-size="12">h</tspan>, T<tspan baseline-shift="sub" font-size="12">max</tspan></text>
+</svg>

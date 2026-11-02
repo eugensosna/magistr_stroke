@@ -44,3 +44,11 @@
 * [[[amprimo2024]]] Amprimo G., Masi G., Pettiti G. et al. Hand tracking for clinical applications: validation of the Google MediaPipe Hand (GMH) and the depth-enhanced GMH-D frameworks. _Biomedical Signal Processing and Control_. 2024. Vol. 96. Art. 106508. DOI: 10.1016/j.bspc.2024.106508.
 * [[[wagh2025]]] Wagh V., Scott M. W., Andrushko J. W. et al. Using MediaPipe to track upper-limb reaching movements after stroke: a proof-of-principle study. _Journal of NeuroEngineering and Rehabilitation_. 2025. Vol. 22. Art. 268. DOI: 10.1186/s12984-025-01808-4.
 * [[[casiez2012]]] Casiez G., Roussel N., Vogel D. 1 € filter: a simple speed-based low-pass filter for noisy input in interactive systems. _CHI '12_ : Proceedings of the SIGCHI Conference on Human Factors in Computing Systems. New York : ACM, 2012. P. 2527–2530. DOI: 10.1145/2207676.2208639.
+* [[[google2026hands]]] Hand landmarks detection guide for Python. _Google AI Edge_ : вебсайт. URL: https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker/python (дата звернення: 02.11.2026).
+* [[[hagerross2000]]] Häger-Ross C., Schieber M. H. Quantifying the independence of human finger movements: comparisons of digits, hands, and movement frequencies. _The Journal of Neuroscience_. 2000. Vol. 20, No. 22. P. 8542–8550. DOI: 10.1523/JNEUROSCI.20-22-08542.2000.
+* [[[levitt1971]]] Levitt H. Transformed up-down methods in psychoacoustics. _The Journal of the Acoustical Society of America_. 1971. Vol. 49, No. 2B. P. 467–477. DOI: 10.1121/1.1912375.
+* [[[vue2026]]] Introduction. _Vue.js_ : вебсайт. URL: https://vuejs.org/guide/introduction.html (дата звернення: 02.11.2026).
+* [[[spring2026boot]]] Spring Boot. _Spring_ : вебсайт. URL: https://docs.spring.io/spring-boot/index.html (дата звернення: 02.11.2026).
+* [[[grpc2026]]] Introduction to gRPC. _gRPC_ : вебсайт. URL: https://grpc.io/docs/what-is-grpc/introduction/ (дата звернення: 02.11.2026).
+* [[[fette2011]]] Fette I., Melnikov A. The WebSocket Protocol : RFC 6455. RFC Editor, 2011. DOI: 10.17487/RFC6455.
+* [[[jones2015]]] Jones M., Bradley J., Sakimura N. JSON Web Token (JWT) : RFC 7519. RFC Editor, 2015. DOI: 10.17487/RFC7519.

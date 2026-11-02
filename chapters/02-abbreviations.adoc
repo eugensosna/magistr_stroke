@@ -3,6 +3,11 @@
 // потім кирилиця, за алфавітом.
 == Перелік умовних позначень
 
+API:: Application Programming Interface, прикладний програмний інтерфейс
 ARAT:: Action Research Arm Test, тест оцінювання функції верхньої кінцівки
+JSON:: JavaScript Object Notation, текстовий формат обміну даними
+JWT:: JSON Web Token, маркер доступу у форматі JSON
+REST:: Representational State Transfer, архітектурний стиль вебсервісів
 RGB:: Red, Green, Blue, колірна модель зображення звичайної камери
 VR:: Virtual Reality, віртуальна реальність
+СУБД:: система управління базами даних
