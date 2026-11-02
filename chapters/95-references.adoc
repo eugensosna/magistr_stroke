@@ -47,3 +47,8 @@
 * [[[google2026hands]]] Hand landmarks detection guide for Python. _Google AI Edge_ : вебсайт. URL: https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker/python (дата звернення: 02.11.2026).
 * [[[hagerross2000]]] Häger-Ross C., Schieber M. H. Quantifying the independence of human finger movements: comparisons of digits, hands, and movement frequencies. _The Journal of Neuroscience_. 2000. Vol. 20, No. 22. P. 8542–8550. DOI: 10.1523/JNEUROSCI.20-22-08542.2000.
 * [[[levitt1971]]] Levitt H. Transformed up-down methods in psychoacoustics. _The Journal of the Acoustical Society of America_. 1971. Vol. 49, No. 2B. P. 467–477. DOI: 10.1121/1.1912375.
+* [[[vue2026]]] Introduction. _Vue.js_ : вебсайт. URL: https://vuejs.org/guide/introduction.html (дата звернення: 02.11.2026).
+* [[[spring2026boot]]] Spring Boot. _Spring_ : вебсайт. URL: https://docs.spring.io/spring-boot/index.html (дата звернення: 02.11.2026).
+* [[[grpc2026]]] Introduction to gRPC. _gRPC_ : вебсайт. URL: https://grpc.io/docs/what-is-grpc/introduction/ (дата звернення: 02.11.2026).
+* [[[fette2011]]] Fette I., Melnikov A. The WebSocket Protocol : RFC 6455. RFC Editor, 2011. DOI: 10.17487/RFC6455.
+* [[[jones2015]]] Jones M., Bradley J., Sakimura N. JSON Web Token (JWT) : RFC 7519. RFC Editor, 2015. DOI: 10.17487/RFC7519.
