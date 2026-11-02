@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="460" viewBox="0 0 1000 460" font-family="Liberation Serif, Times New Roman, serif" font-size="18">
+<defs><marker id="a" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto"><path d="M0,0 L12,5 L0,10 z" fill="black"/></marker></defs>
+<rect width="1000" height="460" fill="white"/>
+<g fill="white" stroke="black" stroke-width="2">
+<rect x="40" y="60" width="220" height="90" rx="22"/>
+<rect x="390" y="60" width="220" height="90" rx="22"/>
+<rect x="740" y="60" width="220" height="90" rx="22"/>
+<rect x="390" y="320" width="220" height="90" rx="22"/>
+<rect x="40" y="320" width="220" height="90" rx="22" stroke-dasharray="6 4"/>
+</g>
+<g text-anchor="middle" font-size="19">
+<text x="150" y="111">Очікування</text>
+<text x="500" y="111">Рух</text>
+<text x="850" y="111">Утримання</text>
+<text x="500" y="371">Повернення</text>
+<text x="150" y="371">Пауза</text>
+</g>
+<!-- start marker -->
+<circle cx="150" cy="18" r="8" fill="black"/>
+<line x1="150" y1="26" x2="150" y2="60" stroke="black" stroke-width="2" marker-end="url(#a)"/>
+<g stroke="black" stroke-width="2" fill="none" marker-end="url(#a)">
+<line x1="260" y1="105" x2="390" y2="105"/>
+<line x1="610" y1="88" x2="740" y2="88"/>
+<line x1="740" y1="125" x2="610" y2="125"/>
+<polyline points="850,150 850,365 610,365"/>
+<line x1="500" y1="150" x2="500" y2="320"/>
+<polyline points="390,365 320,365 320,190 220,190 220,150"/>
+<line x1="110" y1="320" x2="110" y2="150" stroke-dasharray="6 4"/>
+</g>
+<g font-size="16" font-style="italic">
+<text x="325" y="96" text-anchor="middle">u &gt; θ<tspan baseline-shift="sub" font-size="12">r</tspan></text>
+<text x="675" y="80" text-anchor="middle">u ≥ θ<tspan baseline-shift="sub" font-size="12">g</tspan></text>
+<text x="675" y="146" text-anchor="middle">u &lt; θ<tspan baseline-shift="sub" font-size="12">g</tspan> − h</text>
+<text x="860" y="230">τ ≥ t<tspan baseline-shift="sub" font-size="12">h</tspan></text>
+<text x="860" y="252">(успіх)</text>
+<text x="510" y="230">t &gt; T<tspan baseline-shift="sub" font-size="12">max</tspan></text>
+<text x="510" y="252">(невдача)</text>
+<text x="330" y="260">u ≤ θ<tspan baseline-shift="sub" font-size="12">r</tspan></text>
+<text x="120" y="230">кисть</text>
+<text x="120" y="250">виявлено</text>
+</g>
+<text x="40" y="445" font-size="16" font-style="italic">З будь-якого стану: кисть не виявлено довше за t<tspan baseline-shift="sub" font-size="12">lost</tspan> → «Пауза»</text>
+</svg>
