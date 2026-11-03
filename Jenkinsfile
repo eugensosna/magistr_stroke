@@ -49,26 +49,26 @@ pipeline {
 
           rm -rf build/out && mkdir -p "build/out/$SUBDIR"
           # Номер збірки в імені: кілька збірок за день не перезаписують одна одну
-          cp build/thesis.docx "build/out/$SUBDIR/thesis-$BUILD_NUMBER.docx"
-          cp build/thesis.pdf  "build/out/$SUBDIR/thesis-$BUILD_NUMBER.pdf"
-          cp build/thesis.docx "build/out/$SUBDIR/thesis-latest.docx"
-          cp build/thesis.pdf  "build/out/$SUBDIR/thesis-latest.pdf"
+          cp build/thesis.docx "build/out/$SUBDIR/sosna-$BUILD_NUMBER.docx"
+          cp build/thesis.pdf  "build/out/$SUBDIR/sosna-$BUILD_NUMBER.pdf"
+          cp build/thesis.docx "build/out/$SUBDIR/sosna-latest.docx"
+          cp build/thesis.pdf  "build/out/$SUBDIR/sosna-latest.pdf"
           if [ -z "$CHANGE_ID" ] && [ "$BRANCH_NAME" = "main" ]; then
-            cp build/thesis.docx build/out/thesis-latest.docx
-            cp build/thesis.pdf  build/out/thesis-latest.pdf
+            cp build/thesis.docx build/out/sosna-latest.docx
+            cp build/thesis.pdf  build/out/sosna-latest.pdf
           fi
           echo "$SUBDIR" > build/subdir.txt
         '''
-        withCredentials([sshUserPrivateKey(credentialsId: '8d52afd5-38dd-40c6-ab9e-5dccb7e72231',
-                                           keyFileVariable: 'SSH_KEY')]) {
-          // Одинарні лапки: шлях до ключа підставляє shell, а не Groovy.
-          // Без --delete: файли інших гілок і дат на сервері не зачіпаються.
-          sh '''
-            SSH="ssh -i $SSH_KEY -o StrictHostKeyChecking=accept-new"
-            $SSH "$DEPLOY_HOST" "mkdir -p '$DEPLOY_DIR/$(cat build/subdir.txt)'"
-            rsync -av -e "$SSH" build/out/ "$DEPLOY_HOST:$DEPLOY_DIR/"
-          '''
-        }
+        // withCredentials([sshUserPrivateKey(credentialsId: 'deploy_github_ssh',
+        //                                    keyFileVariable: 'SSH_KEY')]) {
+        //   // Одинарні лапки: шлях до ключа підставляє shell, а не Groovy.
+        //   // Без --delete: файли інших гілок і дат на сервері не зачіпаються.
+        //   sh '''
+        //     SSH="ssh -i $SSH_KEY -o StrictHostKeyChecking=accept-new"
+        //     $SSH "$DEPLOY_HOST" "mkdir -p '$DEPLOY_DIR/$(cat build/subdir.txt)'"
+        //     rsync -av -e "$SSH" build/out/ "$DEPLOY_HOST:$DEPLOY_DIR/"
+        //   '''
+        // }
       }
     }
   }
