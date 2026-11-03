@@ -14,7 +14,7 @@ pipeline {
   }
 
   environment {
-    DEPLOY_HOST = 'devops@hpi3'
+    DEPLOY_HOST = 'deploy@ukraine.wg.ukr.lab'
     DEPLOY_DIR  = '/opt/compose-services/proxy/app-data/config/www/html'
     UV_BIN      = 'uv'
   }
