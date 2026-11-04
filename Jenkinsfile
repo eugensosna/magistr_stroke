@@ -15,7 +15,7 @@ pipeline {
 
   environment {
     DEPLOY_HOST = 'deploy@ukraine.wg.ukr.lab'
-    DEPLOY_DIR  = '/opt/compose-services/proxy/app-data/config/www/html'
+    DEPLOY_DIR  = '/opt/compose-services/proxy/data/www/html'
     UV_BIN      = 'uv'
   }
 
@@ -59,16 +59,16 @@ pipeline {
           fi
           echo "$SUBDIR" > build/subdir.txt
         '''
-        // withCredentials([sshUserPrivateKey(credentialsId: 'deploy_github_ssh',
-        //                                    keyFileVariable: 'SSH_KEY')]) {
-        //   // Одинарні лапки: шлях до ключа підставляє shell, а не Groovy.
-        //   // Без --delete: файли інших гілок і дат на сервері не зачіпаються.
-        //   sh '''
-        //     SSH="ssh -i $SSH_KEY -o StrictHostKeyChecking=accept-new"
-        //     $SSH "$DEPLOY_HOST" "mkdir -p '$DEPLOY_DIR/$(cat build/subdir.txt)'"
-        //     rsync -av -e "$SSH" build/out/ "$DEPLOY_HOST:$DEPLOY_DIR/"
-        //   '''
-        // }
+        withCredentials([sshUserPrivateKey(credentialsId: 'deploy_github_ssh',
+                                           keyFileVariable: 'SSH_KEY')]) {
+          // Одинарні лапки: шлях до ключа підставляє shell, а не Groovy.
+          // Без --delete: файли інших гілок і дат на сервері не зачіпаються.
+          sh '''
+            SSH="ssh -i $SSH_KEY -o StrictHostKeyChecking=accept-new"
+            $SSH "$DEPLOY_HOST" "mkdir -p '$DEPLOY_DIR/$(cat build/subdir.txt)'"
+            rsync -av -O -e "$SSH" build/out/ "$DEPLOY_HOST:$DEPLOY_DIR/"
+          '''
+        }
       }
     }
   }
