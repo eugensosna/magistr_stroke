@@ -9,6 +9,10 @@
     uv run build.py --release    чистова версія без приміток: build/thesis-release.docx;
                                  --release діє й для pdf, local
     uv run build.py review       перелік зауважень рецензента (відкриті / виправлені)
+    uv run build.py --version X  версія документа (типово: короткий SHA коміту git,
+                                 «-dirty», якщо є незакомічені зміни; також змінна DOC_VERSION).
+                                 Записується у властивості DOCX і доступна в тексті як {doc-version};
+                                 у dev-збірці друкується в колонтитулі титульного аркуша
     uv run build.py html         швидкий HTML-перегляд build/thesis-preview.html
     uv run build.py check        перевірка посилань, джерел, рисунків і таблиць
     uv run build.py check --sort-bib   впорядкувати джерела за першим посиланням
@@ -32,6 +36,7 @@ SRC = "thesis.adoc"
 NAME = Path(SRC).stem
 IMAGE = "magistr-builder"
 MODE = "dev"              # dev (типово) | release (прапорець --release)
+VERSION = None            # версія документа (прапорець --version)
 STAMP = OUT / ".image"
 
 
@@ -65,6 +70,21 @@ def ensure_image(exe, force=False):
         STAMP.touch()
 
 
+def doc_version():
+    """--version, інакше DOC_VERSION, інакше короткий SHA коміту (+ -dirty)."""
+    if VERSION is not None:
+        return VERSION
+    if os.environ.get("DOC_VERSION"):
+        return os.environ["DOC_VERSION"]
+    try:
+        git = lambda *a: subprocess.run(["git", *a], cwd=ROOT, capture_output=True,
+                                        text=True, check=True).stdout.strip()
+        sha = git("rev-parse", "--short", "HEAD")
+        return sha + ("-dirty" if git("status", "--porcelain", "--untracked-files=no") else "")
+    except (OSError, subprocess.CalledProcessError):
+        return ""
+
+
 def container(*cmd, interactive=False):
     exe = engine()
     ensure_image(exe)
@@ -77,7 +97,8 @@ def container(*cmd, interactive=False):
         args += ["--mount", f"type=bind,source={ROOT},target=/documents"]
         if hasattr(os, "getuid"):  # Linux/macOS: файли в build/ належатимуть користувачу
             args += ["-u", f"{os.getuid()}:{os.getgid()}"]
-    args += ["-e", f"MODE={MODE}", "-w", "/documents", IMAGE, *cmd]
+    args += ["-e", f"MODE={MODE}", "-e", f"DOC_VERSION={doc_version()}",
+             "-w", "/documents", IMAGE, *cmd]
     run(args)
 
 
@@ -105,7 +126,7 @@ def check(*extra):
 
 
 def local():
-    run(["sh", "tools/build.sh", SRC], env={**os.environ, "MODE": MODE})
+    run(["sh", "tools/build.sh", SRC], env={**os.environ, "MODE": MODE, "DOC_VERSION": doc_version()})
 
 
 def review():
@@ -136,8 +157,17 @@ def main():
         stream.reconfigure(encoding="utf-8")
     os.environ.setdefault("PYTHONUTF8", "1")
 
-    global MODE
+    global MODE, VERSION
     argv = sys.argv[1:]
+    for i, a in enumerate(argv):
+        if a == "--version" and i + 1 < len(argv):
+            VERSION = argv[i + 1]
+            del argv[i:i + 2]
+            break
+        if a.startswith("--version="):
+            VERSION = a.split("=", 1)[1]
+            del argv[i]
+            break
     for flag, mode in (("--dev", "dev"), ("--release", "release")):
         while flag in argv:
             argv.remove(flag)

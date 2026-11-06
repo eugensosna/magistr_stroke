@@ -6,12 +6,16 @@
   * переліки: маркер «–», нумерація «1)», «а)», відступи як в абзаців;
   * Word пропонує оновити поля (зміст) під час відкриття документа;
   * автоматичне перенесення слів (якщо ввімкнено у format.toml);
-  * dev-збірка: примітки до виправлених зауважень позначаються як закриті (resolved).
+  * dev-збірка: примітки до виправлених зауважень позначаються як закриті (resolved);
+  * версія документа ($DOC_VERSION) - у властивостях DOCX (cp:version), а в dev-збірці
+    ($MODE=dev) ще й у колонтитулі титульного аркуша.
 
 Використання: postprocess.py format.toml in.docx out.docx [review.json]
 """
 import json
+import os
 import re
+from xml.sax.saxutils import escape
 import sys
 import tomllib
 import zipfile
@@ -35,10 +39,13 @@ def tw(v):
     return str(int(round(v)))
 
 
-def page_number_part(kind, align, with_number):
+def page_number_part(kind, align, with_number, note=""):
     tag = "hdr" if kind == "header" else "ftr"
     style = "Header" if kind == "header" else "Footer"
     runs = ""
+    if note:   # дрібний сірий напис (версія документа на титульному аркуші dev-збірки)
+        runs += ('<w:r><w:rPr><w:color w:val="808080"/><w:sz w:val="18"/></w:rPr>'
+                 f'<w:t xml:space="preserve">{escape(note)}</w:t></w:r>')
     if with_number:
         runs = ('<w:r><w:fldChar w:fldCharType="begin"/></w:r>'
                 '<w:r><w:instrText xml:space="preserve"> PAGE </w:instrText></w:r>'
@@ -168,6 +175,13 @@ def comments_extended(comment_ids, fixed):
             f'{items}</w15:commentsEx>')
 
 
+def fix_core(xml, version):
+    """Записує версію документа у властивість cp:version."""
+    xml = re.sub(r"<cp:version>.*?</cp:version>", "", xml, flags=re.S)
+    return xml.replace("</cp:coreProperties>",
+                       f"<cp:version>{escape(version)}</cp:version></cp:coreProperties>")
+
+
 def fix_content_types(xml, kind):
     ct = HEADER_CT if kind == "header" else FOOTER_CT
     name = "header" if kind == "header" else "footer"
@@ -178,6 +192,8 @@ def fix_content_types(xml, kind):
 
 def main():
     fmt_path, src_path, out_path = sys.argv[1:4]
+    version = os.environ.get("DOC_VERSION", "")
+    note = f"Версія документа: {version} (dev)" if version and os.environ.get("MODE") == "dev" else ""
     fixed = set()
     if len(sys.argv) > 4 and sys.argv[4]:
         with open(sys.argv[4], encoding="utf-8") as fh:
@@ -200,7 +216,8 @@ def main():
             if fn.startswith(f"word/dstu-{name}"):
                 continue
             if fn in ("word/document.xml", "word/numbering.xml", "word/settings.xml",
-                      "word/_rels/document.xml.rels", "[Content_Types].xml", "word/comments.xml"):
+                      "word/_rels/document.xml.rels", "[Content_Types].xml", "word/comments.xml",
+                      "docProps/core.xml"):
                 text = data.decode("utf-8")
                 if fn == "word/document.xml":
                     text = fix_document(text, fmt)
@@ -208,6 +225,9 @@ def main():
                     text = fix_numbering(text, fmt)
                 elif fn == "word/settings.xml":
                     text = fix_settings(text, fmt)
+                elif fn == "docProps/core.xml":
+                    if version:
+                        text = fix_core(text, version)
                 elif fn == "word/comments.xml":
                     if has_comments:
                         text = fix_comments(text)
@@ -225,7 +245,7 @@ def main():
                 data = text.encode("utf-8")
             dst.writestr(item, data)
         dst.writestr(f"word/dstu-{name}1.xml", page_number_part(kind, align, True))
-        dst.writestr(f"word/dstu-{name}2.xml", page_number_part(kind, align, False))
+        dst.writestr(f"word/dstu-{name}2.xml", page_number_part(kind, align, False, note))
         if has_comments:
             dst.writestr("word/commentsExtended.xml", comments_extended(comment_ids, fixed))
         assert "word/document.xml" in names

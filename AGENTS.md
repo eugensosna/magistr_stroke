@@ -18,10 +18,14 @@ uv run build.py check --sort-bib   # впорядкувати джерела з�
 uv run build.py --release          # чистова версія без приміток: build/thesis-release.docx
 uv run build.py --release pdf      # те саме + build/thesis-release.pdf
 uv run build.py review             # перелік зауважень (відкриті / виправлені)
+uv run build.py --version X        # версія документа (типово: короткий SHA коміту, «-dirty» за незакомічених змін)
 ```
 
 Типовий режим — dev: зауваження рецензента потрапляють у DOCX як примітки Word.
 Чистова версія без приміток збирається лише з `--release`.
+
+Відкриті завдання позначаються рядком-коментарем `// TODO: ...` у будь-якому `.adoc`, зокрема в `config/attributes.adoc`.
+`check` виводить їх перелік з номерами рядків. На результат перевірки вони не впливають, але перед здаванням роботи всі TODO мають бути закриті.
 
 Після будь-якої зміни тексту запускайте `uv run build.py check`, а після суттєвих змін — `uv run build.py pdf`.
 Перегляньте сторінки PDF (`pdftoppm -r 60 -png build/thesis-dev.pdf /tmp/p`) і переконайтеся, що верстка не зламалася.

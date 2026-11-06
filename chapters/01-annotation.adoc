@@ -3,6 +3,7 @@
 {student} {thesis-title}.
 Кваліфікаційна робота магістра за спеціальністю {specialty-code} {specialty}.
 Керівник {supervisor}
+// TODO: {university} друкується великими літерами; у бібліографічному описі потрібен звичайний регістр («Запорізький національний університет»)
 {city}: {university}, {year}.
 
 // Обсяг роботи, кількість рисунків, таблиць, джерел, додатків.
@@ -16,6 +17,7 @@
 == Abstract
 
 Surname I. Thesis title.
+// TODO: код спеціальності вписано вручну — узгодити з :specialty-code: у config/attributes.adoc
 Master's qualification thesis, specialty 121 "Software Engineering".
 Supervisor Surname I.
 Zaporizhzhia: Zaporizhzhia National University, 2026.

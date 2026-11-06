@@ -6,6 +6,8 @@
 # MODE=dev (типово) - зауваження рецензента (// ЗАУВАЖЕННЯ ...) стають примітками Word,
 #            виправлені ([fixed]) позначаються як закриті; результат: $OUT/<name>-dev.docx.
 # MODE=release - чистовий документ без приміток; результат: $OUT/<name>-release.docx.
+# DOC_VERSION - версія документа (типово короткий SHA коміту git): атрибут {doc-version},
+#               властивість «Версія» DOCX, а в dev - напис у колонтитулі титульного аркуша.
 set -eu
 
 SRC="${1:-thesis.adoc}"
@@ -13,6 +15,8 @@ NAME="$(basename "$SRC" .adoc)"
 OUT="${OUT:-build}"
 FORMAT="${FORMAT:-config/format.toml}"
 MODE="${MODE:-dev}"
+DOC_VERSION="${DOC_VERSION:-$(git rev-parse --short HEAD 2>/dev/null || true)}"
+export MODE DOC_VERSION
 
 mkdir -p "$OUT"
 
@@ -45,6 +49,7 @@ asciidoctor \
   -a sectnums! -a toc=macro -a stem=latexmath \
   -a figure-caption! -a table-caption! -a listing-caption! -a example-caption! \
   -a appendix-caption! -a lang=uk \
+  -a doc-version="$DOC_VERSION" \
   -o "$OUT/$NAME.html" "$SRC"
 
 echo ">> pandoc: $OUT/$NAME.docx"
@@ -57,4 +62,4 @@ pandoc "$OUT/$NAME.html" -f html -t docx \
 
 python3 tools/postprocess.py "$FORMAT" "$OUT/$NAME.raw.docx" "$OUT/$NAME.docx" $REVIEW_JSON
 rm -f "$OUT/$NAME.raw.docx" "$OUT/pandoc-default.docx"
-echo ">> готово: $OUT/$NAME.docx"
+echo ">> готово: $OUT/$NAME.docx${DOC_VERSION:+ (версія $DOC_VERSION)}"

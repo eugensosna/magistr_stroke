@@ -10,6 +10,8 @@
 //   release - чистова версія без приміток -> sosna-release-<N>, sosna-release-latest.
 // Автоматичний запуск (push, webhook, опитування SCM, індексація гілок) завжди збирає dev.
 // Ручний запуск (Build with Parameters) збирає тип, вибраний у параметрі BUILD_TYPE.
+// Версія документа (DOC_VERSION) - короткий SHA коміту; потрапляє у властивості DOCX,
+// а в dev-збірці ще й у колонтитул титульного аркуша.
 pipeline {
   agent any
 
@@ -42,7 +44,10 @@ pipeline {
           echo "Запуск: ${manual ? 'вручну' : 'автоматично'} (${causes})"
           echo "Тип збірки: ${env.EFFECTIVE_BUILD_TYPE}" +
                (manual ? '' : " (автоматичний запуск, параметр BUILD_TYPE=${requested} проігноровано)")
-          currentBuild.description = env.EFFECTIVE_BUILD_TYPE
+          // build.py бере версію документа зі змінної DOC_VERSION
+          env.DOC_VERSION = env.GIT_COMMIT ? env.GIT_COMMIT.take(7) : ''
+          echo "Версія документа: ${env.DOC_VERSION ?: '(не визначено, build.py візьме з git)'}"
+          currentBuild.description = "${env.EFFECTIVE_BUILD_TYPE} ${env.DOC_VERSION}".trim()
         }
       }
     }
@@ -52,7 +57,7 @@ pipeline {
         // check: биті посилання, джерела, рисунки й таблиці без посилань;
         // pdf: збирає DOCX і PDF (dev -> build/thesis-dev.*, release -> build/thesis-release.*)
         sh '''
-          echo "EFFECTIVE_BUILD_TYPE=$EFFECTIVE_BUILD_TYPE"
+          echo "EFFECTIVE_BUILD_TYPE=$EFFECTIVE_BUILD_TYPE DOC_VERSION=$DOC_VERSION"
           case "$EFFECTIVE_BUILD_TYPE" in
             dev)     FLAG="" ;;
             release) FLAG="--release" ;;

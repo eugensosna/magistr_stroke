@@ -11,6 +11,8 @@
   * посилання на рисунок/таблицю, що стоїть після самого рисунка/таблиці (лише попередження);
   * повторювані ідентифікатори;
   * порядок джерел у списку відносно порядку першого посилання.
+Також виводить перелік відкритих завдань — рядків-коментарів «// TODO: ...» у всіх
+включених файлах (на код виходу не впливає).
 Код виходу 1, якщо знайдено помилки.
 """
 import re
@@ -25,6 +27,7 @@ XREF_RE = re.compile(r"<<([^,>]+)(?:,[^>]*)?>>|xref:([^\[]+)\[")
 ANCHOR_RE = re.compile(r"\[\[([A-Za-z0-9_\-:.]+)(?:,[^\]]*)?\]\]")
 BIB_RE = re.compile(r"^\*\s+\[\[\[([^\],]+)(?:,[^\]]*)?\]\]\]")
 COMMENT_RE = re.compile(r"^\s*//")
+TODO_RE = re.compile(r"^\s*//\s*TODO\b:?\s*(.*)$")
 
 
 def collect_lines(path, seen=None):
@@ -46,6 +49,24 @@ def collect_lines(path, seen=None):
                 out.extend(collect_lines(inc, seen))
             continue
         out.append((path, no, line))
+    return out
+
+
+def collect_todos(path, seen=None):
+    """Рядки «// TODO: ...» у файлі та всіх включених до нього (з урахуванням include::)."""
+    seen = seen if seen is not None else {path.resolve()}
+    out = []
+    for no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        m = TODO_RE.match(line)
+        if m:
+            out.append(f"{path.relative_to(ROOT)}:{no}: {m.group(1)}")
+            continue
+        m = INCLUDE_RE.match(line)
+        if m:
+            inc = (path.parent / m.group(1)).resolve()
+            if inc.suffix == ".adoc" and inc not in seen and inc.exists():
+                seen.add(inc)
+                out.extend(collect_todos(inc, seen))
     return out
 
 
@@ -116,12 +137,15 @@ def main():
         warnings.append("порядок джерел не відповідає порядку першого посилання "
                         "(виправити: python3 tools/check.py --sort-bib)")
 
+    todos = collect_todos(MAIN)
+    for t in todos:
+        print(f"TODO: {t}")
     for w in warnings:
         print(f"попередження: {w}")
     for e in errors:
         print(f"помилка: {e}")
     print(f"джерел: {len(bib)}, якорів: {len(anchors)}, посилань: {len(refs)}, "
-          f"помилок: {len(errors)}, попереджень: {len(warnings)}")
+          f"помилок: {len(errors)}, попереджень: {len(warnings)}, TODO: {len(todos)}")
     return 1 if errors else 0
 
 
