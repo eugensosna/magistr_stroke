@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """Збірка магістерської роботи (Linux, macOS, Windows).
 
-    uv run build.py              зібрати build/thesis.docx (у контейнері)
-    uv run build.py pdf          DOCX + build/thesis.pdf (LibreOffice у контейнері,
+    uv run build.py              зібрати build/thesis-dev.docx (у контейнері) у режимі dev:
+                                 зауваження рецензента стають примітками Word
+                                 (виправлені позначено FIXED і закрито)
+    uv run build.py pdf          DOCX + build/thesis-dev.pdf (LibreOffice у контейнері,
                                  оновлює зміст і номери сторінок)
+    uv run build.py --release    чистова версія без приміток: build/thesis-release.docx;
+                                 --release діє й для pdf, local
+    uv run build.py review       перелік зауважень рецензента (відкриті / виправлені)
     uv run build.py html         швидкий HTML-перегляд build/thesis-preview.html
     uv run build.py check        перевірка посилань, джерел, рисунків і таблиць
     uv run build.py check --sort-bib   впорядкувати джерела за першим посиланням
@@ -26,6 +31,7 @@ OUT = ROOT / "build"
 SRC = "thesis.adoc"
 NAME = Path(SRC).stem
 IMAGE = "magistr-builder"
+MODE = "dev"              # dev (типово) | release (прапорець --release)
 STAMP = OUT / ".image"
 
 
@@ -71,7 +77,7 @@ def container(*cmd, interactive=False):
         args += ["--mount", f"type=bind,source={ROOT},target=/documents"]
         if hasattr(os, "getuid"):  # Linux/macOS: файли в build/ належатимуть користувачу
             args += ["-u", f"{os.getuid()}:{os.getgid()}"]
-    args += ["-w", "/documents", IMAGE, *cmd]
+    args += ["-e", f"MODE={MODE}", "-w", "/documents", IMAGE, *cmd]
     run(args)
 
 
@@ -79,9 +85,13 @@ def docx():
     container("sh", "tools/build.sh", SRC)
 
 
+def out_name():
+    return f"{NAME}-{MODE}"   # thesis-dev | thesis-release
+
+
 def pdf():
     docx()
-    container("python3", "tools/lo_export.py", f"build/{NAME}.docx", f"build/{NAME}.pdf")
+    container("python3", "tools/lo_export.py", f"build/{out_name()}.docx", f"build/{out_name()}.pdf")
 
 
 def html():
@@ -95,7 +105,11 @@ def check(*extra):
 
 
 def local():
-    run(["sh", "tools/build.sh", SRC])
+    run(["sh", "tools/build.sh", SRC], env={**os.environ, "MODE": MODE})
+
+
+def review():
+    run([sys.executable, "tools/review.py", "list"])
 
 
 def image():
@@ -112,7 +126,7 @@ def clean():
 
 COMMANDS = {
     "docx": docx, "pdf": pdf, "html": html, "check": check, "local": local,
-    "image": image, "shell": shell, "clean": clean,
+    "image": image, "shell": shell, "clean": clean, "review": review,
 }
 
 
@@ -122,7 +136,13 @@ def main():
         stream.reconfigure(encoding="utf-8")
     os.environ.setdefault("PYTHONUTF8", "1")
 
-    cmd, *rest = sys.argv[1:] or ["docx"]
+    global MODE
+    argv = sys.argv[1:]
+    for flag, mode in (("--dev", "dev"), ("--release", "release")):
+        while flag in argv:
+            argv.remove(flag)
+            MODE = mode
+    cmd, *rest = argv or ["docx"]
     if cmd not in COMMANDS:
         sys.exit(__doc__)
     COMMANDS[cmd](*rest)

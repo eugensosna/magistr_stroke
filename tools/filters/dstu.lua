@@ -425,9 +425,47 @@ end
 -- ---------------------------------------------------------------------------
 -- Інлайни: формули, виноски, перехресні посилання
 -- ---------------------------------------------------------------------------
+-- Зауваження рецензента (dev-збірка): tools/review.py обгортає текст маркером
+-- <span class="review-comment" data-cid="N">, а тексти зауважень лежать у $REVIEW_JSON.
+local review = nil
+local function load_review()
+  if review then return review end
+  review = {}
+  local path = os.getenv('REVIEW_JSON')
+  if path and path ~= '' then
+    local fh = assert(io.open(path, 'r'))
+    for _, c in ipairs(pandoc.json.decode(fh:read('a'), false)) do
+      review[tostring(math.floor(c.id))] = c
+    end
+    fh:close()
+  end
+  return review
+end
+
+local function review_comment(s)
+  local id = attr_value(s, 'cid')
+  local c = load_review()[id]
+  if not c then return s.content end
+  local text = pandoc.Inlines(c.text)
+  if c.fixed then
+    text:insert(pandoc.LineBreak())
+    text:extend(pandoc.Inlines('FIXED' .. (c.reply ~= '' and (': ' .. c.reply) or '')))
+  elseif c.reply ~= '' then
+    text:insert(pandoc.LineBreak())
+    text:extend(pandoc.Inlines('Відповідь: ' .. c.reply))
+  end
+  local attrs = { id = id, author = c.author, date = c.date .. 'T00:00:00Z' }
+  local out = pandoc.Inlines({ pandoc.Span(text, pandoc.Attr('', { 'comment-start' }, attrs)) })
+  out:extend(s.content)
+  out:insert(pandoc.Span({}, pandoc.Attr('', { 'comment-end' }, { id = id })))
+  return out
+end
+
 local inline_filter = {
   Span = function(s)
-    if s.classes:includes('math') and s.classes:includes('inline') then
+    if s.classes:includes('review-comment') then
+      return review_comment(s)
+    elseif s.classes:includes('math') and s.classes:includes('inline') then
       return pandoc.Math('InlineMath', attr_value(s, 'tex') or stringify(s))
     elseif s.classes:includes('footnote-inline') then
       return pandoc.Note({ pandoc.Para(s.content) })

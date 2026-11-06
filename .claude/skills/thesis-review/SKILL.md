@@ -10,7 +10,7 @@ description: Нормоконтроль і рецензування магіст
 ```sh
 uv run build.py check     # посилання, джерела, рисунки, таблиці
 uv run build.py pdf       # збірка має пройти без WARN/ERROR від asciidoctor
-pdfinfo build/thesis.pdf | grep Pages
+pdfinfo build/thesis-dev.pdf | grep Pages
 ```
 
 Усі помилки `uv run build.py check` виправте до подальшої перевірки.
@@ -19,7 +19,7 @@ pdfinfo build/thesis.pdf | grep Pages
 
 ```sh
 rm -rf /tmp/pages && mkdir /tmp/pages
-pdftoppm -r 45 -png build/thesis.pdf /tmp/pages/p
+pdftoppm -r 45 -png build/thesis-dev.pdf /tmp/pages/p
 magick montage /tmp/pages/p-*.png -tile 8x -geometry +3+3 /tmp/pages/sheet.png
 ```
 

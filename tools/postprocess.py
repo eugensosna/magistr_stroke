@@ -5,10 +5,12 @@
     (на титульному аркуші номер не друкується, але враховується);
   * переліки: маркер «–», нумерація «1)», «а)», відступи як в абзаців;
   * Word пропонує оновити поля (зміст) під час відкриття документа;
-  * автоматичне перенесення слів (якщо ввімкнено у format.toml).
+  * автоматичне перенесення слів (якщо ввімкнено у format.toml);
+  * dev-збірка: примітки до виправлених зауважень позначаються як закриті (resolved).
 
-Використання: postprocess.py format.toml in.docx out.docx
+Використання: postprocess.py format.toml in.docx out.docx [review.json]
 """
+import json
 import re
 import sys
 import tomllib
@@ -22,6 +24,11 @@ HEADER_CT = "application/vnd.openxmlformats-officedocument.wordprocessingml.head
 FOOTER_CT = "application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"
 HEADER_REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/header"
 FOOTER_REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer"
+W14_NS = "http://schemas.microsoft.com/office/word/2010/wordml"
+W15_NS = "http://schemas.microsoft.com/office/word/2012/wordml"
+MC_NS = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+COMMENTS_EX_CT = "application/vnd.openxmlformats-officedocument.wordprocessingml.commentsExtended+xml"
+COMMENTS_EX_REL = "http://schemas.microsoft.com/office/2011/relationships/commentsExtended"
 
 
 def tw(v):
@@ -135,6 +142,32 @@ def fix_rels(xml, kind):
     return xml.replace("</Relationships>", add + "</Relationships>")
 
 
+def para_id(comment_id):
+    return f"{0x10000000 + int(comment_id):08X}"
+
+
+def fix_comments(xml):
+    """Додає w14:paraId останньому абзацу кожної примітки (потрібно для commentsExtended)."""
+    if "xmlns:w14=" not in xml:
+        xml = xml.replace("<w:comments ", f'<w:comments xmlns:w14="{W14_NS}" ', 1)
+
+    def one(m):
+        body = m.group(2)
+        last = body.rfind("<w:p>")
+        if last >= 0:
+            body = body[:last] + f'<w:p w14:paraId="{para_id(m.group(1))}">' + body[last + 5:]
+        return m.group(0)[:m.start(2) - m.start(0)] + body + "</w:comment>"
+    return re.sub(r'<w:comment w:id="(\d+)"[^>]*>(.*?)</w:comment>', one, xml, flags=re.S)
+
+
+def comments_extended(comment_ids, fixed):
+    items = "".join(f'<w15:commentEx w15:paraId="{para_id(i)}" w15:done="{1 if i in fixed else 0}"/>'
+                    for i in comment_ids)
+    return (f'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            f'<w15:commentsEx xmlns:mc="{MC_NS}" xmlns:w15="{W15_NS}" mc:Ignorable="w15">'
+            f'{items}</w15:commentsEx>')
+
+
 def fix_content_types(xml, kind):
     ct = HEADER_CT if kind == "header" else FOOTER_CT
     name = "header" if kind == "header" else "footer"
@@ -145,6 +178,10 @@ def fix_content_types(xml, kind):
 
 def main():
     fmt_path, src_path, out_path = sys.argv[1:4]
+    fixed = set()
+    if len(sys.argv) > 4 and sys.argv[4]:
+        with open(sys.argv[4], encoding="utf-8") as fh:
+            fixed = {str(c["id"]) for c in json.load(fh) if c["fixed"]}
     with open(fmt_path, "rb") as fh:
         fmt = tomllib.load(fh)
     kind = fmt["page"].get("page_number_position", "header")
@@ -154,13 +191,16 @@ def main():
     with zipfile.ZipFile(src_path) as src, \
             zipfile.ZipFile(out_path, "w", zipfile.ZIP_DEFLATED) as dst:
         names = src.namelist()
+        has_comments = ("word/comments.xml" in names
+                        and b"<w:comment " in src.read("word/comments.xml"))
+        comment_ids = []
         for item in src.infolist():
             data = src.read(item.filename)
             fn = item.filename
             if fn.startswith(f"word/dstu-{name}"):
                 continue
             if fn in ("word/document.xml", "word/numbering.xml", "word/settings.xml",
-                      "word/_rels/document.xml.rels", "[Content_Types].xml"):
+                      "word/_rels/document.xml.rels", "[Content_Types].xml", "word/comments.xml"):
                 text = data.decode("utf-8")
                 if fn == "word/document.xml":
                     text = fix_document(text, fmt)
@@ -168,14 +208,26 @@ def main():
                     text = fix_numbering(text, fmt)
                 elif fn == "word/settings.xml":
                     text = fix_settings(text, fmt)
+                elif fn == "word/comments.xml":
+                    if has_comments:
+                        text = fix_comments(text)
+                    comment_ids = re.findall(r'<w:comment w:id="(\d+)"', text)
                 elif fn == "word/_rels/document.xml.rels":
                     text = fix_rels(text, kind)
+                    if has_comments:
+                        text = text.replace("</Relationships>", f'<Relationship Type="{COMMENTS_EX_REL}" '
+                                            'Id="rIdDstuCommentsEx" Target="commentsExtended.xml"/></Relationships>')
                 else:
                     text = fix_content_types(text, kind)
+                    if has_comments:
+                        text = text.replace("</Types>", '<Override PartName="/word/commentsExtended.xml" '
+                                            f'ContentType="{COMMENTS_EX_CT}"/></Types>')
                 data = text.encode("utf-8")
             dst.writestr(item, data)
         dst.writestr(f"word/dstu-{name}1.xml", page_number_part(kind, align, True))
         dst.writestr(f"word/dstu-{name}2.xml", page_number_part(kind, align, False))
+        if has_comments:
+            dst.writestr("word/commentsExtended.xml", comments_extended(comment_ids, fixed))
         assert "word/document.xml" in names
 
 

@@ -2,14 +2,34 @@
 # Збірка роботи: AsciiDoc -> HTML (asciidoctor) -> DOCX (pandoc) -> пост-обробка.
 # Запускається в контейнері (uv run build.py) або локально (uv run build.py local), якщо встановлені
 # asciidoctor, pandoc >= 3.1 і python3 >= 3.11.
+#
+# MODE=dev (типово) - зауваження рецензента (// ЗАУВАЖЕННЯ ...) стають примітками Word,
+#            виправлені ([fixed]) позначаються як закриті; результат: $OUT/<name>-dev.docx.
+# MODE=release - чистовий документ без приміток; результат: $OUT/<name>-release.docx.
 set -eu
 
 SRC="${1:-thesis.adoc}"
 NAME="$(basename "$SRC" .adoc)"
 OUT="${OUT:-build}"
 FORMAT="${FORMAT:-config/format.toml}"
+MODE="${MODE:-dev}"
 
 mkdir -p "$OUT"
+
+REVIEW_JSON=""
+if [ "$MODE" = "dev" ]; then
+  echo ">> dev: зауваження рецензента -> примітки Word"
+  python3 tools/review.py prepare "$OUT/src"
+  SRC="$OUT/src/$SRC"
+  REVIEW_JSON="$OUT/src/review.json"
+  NAME="$NAME-dev"
+elif [ "$MODE" = "release" ]; then
+  NAME="$NAME-release"
+else
+  echo "!! невідомий MODE=$MODE (dev або release)" >&2
+  exit 2
+fi
+export REVIEW_JSON
 
 echo ">> reference.docx (стилі за $FORMAT)"
 pandoc -o "$OUT/pandoc-default.docx" --print-default-data-file reference.docx
@@ -35,6 +55,6 @@ pandoc "$OUT/$NAME.html" -f html -t docx \
   --syntax-highlighting=none \
   -o "$OUT/$NAME.raw.docx"
 
-python3 tools/postprocess.py "$FORMAT" "$OUT/$NAME.raw.docx" "$OUT/$NAME.docx"
+python3 tools/postprocess.py "$FORMAT" "$OUT/$NAME.raw.docx" "$OUT/$NAME.docx" $REVIEW_JSON
 rm -f "$OUT/$NAME.raw.docx" "$OUT/pandoc-default.docx"
 echo ">> готово: $OUT/$NAME.docx"
