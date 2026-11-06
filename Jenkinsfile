@@ -84,7 +84,7 @@ pipeline {
           if [ "$EFFECTIVE_BUILD_TYPE" = "release" ]; then
             SRC=build/thesis-release; DST=sosna-release
           else
-            SRC=build/thesis-dev;     DST=sosna
+            SRC=build/thesis-dev;     DST=sosna-dev
           fi
 
           rm -rf build/out && mkdir -p "build/out/$SUBDIR"
