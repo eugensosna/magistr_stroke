@@ -10,10 +10,12 @@
 ## Швидкий старт
 
 ```sh
-uv run build.py         # -> build/thesis.docx (збірка в контейнері podman/docker)
-uv run build.py pdf     # -> build/thesis.docx і build/thesis.pdf (LibreOffice: оновлює зміст і номери сторінок)
+uv run build.py         # -> build/thesis-dev.docx (збірка в контейнері, з примітками рецензента)
+uv run build.py pdf     # -> build/thesis-dev.docx і build/thesis-dev.pdf (LibreOffice: оновлює зміст і номери сторінок)
 uv run build.py html    # -> build/thesis-preview.html (швидкий перегляд у браузері)
 uv run build.py check   # перевірка посилань, джерел, рисунків і таблиць
+uv run build.py --release  # -> build/thesis-release.docx: чистова версія без приміток рецензента
+uv run build.py review  # перелік зауважень рецензента (відкриті / виправлені)
 uv run build.py clean
 ```
 
@@ -23,7 +25,7 @@ uv run build.py clean
 Рушій можна вибрати явно: `ENGINE=docker uv run build.py` (у PowerShell: `$env:ENGINE="docker"`).
 Без контейнера: `uv run build.py local` (потрібні asciidoctor, pandoc ≥ 3.1, sh).
 
-Під час першого відкриття `thesis.docx` Word запропонує **оновити поля**.
+Під час першого відкриття `thesis-dev.docx` або `thesis-release.docx` Word запропонує **оновити поля**.
 Погодьтеся, і зміст заповниться номерами сторінок. Вручну зміст оновлюється так: Ctrl+A, потім F9.
 У LibreOffice: «Сервіс → Оновити → Оновити все». Можна також одразу скористатися `uv run build.py pdf`.
 
