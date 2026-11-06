@@ -11,17 +11,11 @@
 
 {nbsp}
 
-{nbsp}
-
-{nbsp}
-
 [.title]
 {work-type} +
 {degree}
 
 на тему: «{thesis-title}»
-
-{nbsp}
 
 {nbsp}
 
@@ -42,9 +36,6 @@
 [.right]
 Рецензент: {reviewer-title} +
 {reviewer}
-
-{nbsp}
-
 
 {nbsp}
 
