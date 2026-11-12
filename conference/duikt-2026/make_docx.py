@@ -82,6 +82,7 @@ def main():
         "tblnum": find(doc, "Табл. 1")._p,
         "tbltitle": find(doc, "Назва таблиці")._p,
         "refhead": find(doc, "Список використаних джерел")._p,
+        "heading": find(doc, "Список використаних джерел")._p,   # заголовки частин тез — тим самим стилем
         "ref": find(doc, "Будіщев")._p,
         "blank": next(p for p in doc.paragraphs if not p.text.strip())._p,
     }
@@ -98,7 +99,7 @@ def main():
         el = copy.deepcopy(proto[kind])
         if text or kind != "blank":
             fill(el, text.replace("'", "’"))   # типографський апостроф
-        if kind in ("tblnum", "tbltitle", "title"):  # не відривати від наступного абзацу/таблиці
+        if kind in ("tblnum", "tbltitle", "title", "heading"):  # не відривати від наступного абзацу/таблиці
             ppr = el.find(qn("w:pPr"))
             if ppr is not None and ppr.find(qn("w:keepNext")) is None:
                 ppr.insert(0, ppr.makeelement(qn("w:keepNext"), {}))
@@ -115,6 +116,8 @@ def main():
         elif kind == "title":
             add("title", " ".join(l.strip() for l in lines if l.strip()))
             add("blank")
+        elif kind == "heading":
+            add("heading", " ".join(l.strip() for l in lines if l.strip()))
         elif kind == "text":
             for para in "\n".join(lines).split("\n\n"):
                 if para.strip():
