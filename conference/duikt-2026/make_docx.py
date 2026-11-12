@@ -17,9 +17,14 @@ from pathlib import Path
 
 from docx import Document
 from docx.oxml.ns import qn
+from docx.shared import Emu
+from docx.text.paragraph import Paragraph
+from lxml import etree
 
 HERE = Path(__file__).resolve().parent
 SRC = HERE / "tezy.md"
+EQ = HERE / "eq"                     # формули (OMML-абзаци з редакції керівника)
+ROOT = HERE.parents[1]
 TEMPLATE = HERE / "template.docx"
 BUILD = HERE.parents[1] / "build"   # каталог build/ у корені репозиторію (ігнорується git)
 OUT = BUILD / "Сосна_Секція_3.docx"
@@ -45,23 +50,24 @@ def find(doc, start):
 
 
 def fill(p_el, text):
-    """Замінює вміст абзацу текстом з розміткою *курсив* і _{індекс}, зберігаючи формат першого run."""
+    """Замінює вміст абзацу текстом з розміткою *курсив*, _{нижній} і ^{верхній} індекс, зберігаючи формат першого run."""
     runs = p_el.findall(qn("w:r"))
     rpr = runs[0].find(qn("w:rPr")) if runs else None
     for r in p_el.findall(qn("w:r")) + p_el.findall(qn("w:hyperlink")):
         p_el.remove(r)
-    for tok in re.split(r"(\*[^*]+\*|_\{[^}]+\})", text):
+    for tok in re.split(r"(\*[^*]+\*|_\{[^}]+\}|\^\{[^}]+\})", text):
         if not tok:
             continue
         italic = tok.startswith("*")
         sub = tok.startswith("_{")
-        body = tok[1:-1] if italic else tok[2:-1] if sub else tok
+        sup = tok.startswith("^{")
+        body = tok[1:-1] if italic else tok[2:-1] if sub or sup else tok
         r = p_el.makeelement(qn("w:r"), {})
         rp = copy.deepcopy(rpr) if rpr is not None else r.makeelement(qn("w:rPr"), {})
         if italic and rp.find(qn("w:i")) is None:
             rp.append(rp.makeelement(qn("w:i"), {}))
-        if sub:
-            va = rp.makeelement(qn("w:vertAlign"), {qn("w:val"): "subscript"})
+        if sub or sup:
+            va = rp.makeelement(qn("w:vertAlign"), {qn("w:val"): "subscript" if sub else "superscript"})
             rp.append(va)
         r.append(rp)
         t = r.makeelement(qn("w:t"), {})
@@ -84,6 +90,8 @@ def main():
         "refhead": find(doc, "Список використаних джерел")._p,
         "heading": find(doc, "Список використаних джерел")._p,   # заголовки частин тез — тим самим стилем
         "ref": find(doc, "Будіщев")._p,
+        "figure": find(doc, "Текст текст")._p,
+        "caption": find(doc, "Текст текст")._p,
         "blank": next(p for p in doc.paragraphs if not p.text.strip())._p,
     }
     proto = {k: copy.deepcopy(v) for k, v in proto.items()}
@@ -99,11 +107,20 @@ def main():
         el = copy.deepcopy(proto[kind])
         if text or kind != "blank":
             fill(el, text.replace("'", "’"))   # типографський апостроф
-        if kind in ("tblnum", "tbltitle", "title", "heading"):  # не відривати від наступного абзацу/таблиці
+        if kind in ("tblnum", "tbltitle", "title", "heading", "figure"):  # не відривати від наступного абзацу/таблиці
             ppr = el.find(qn("w:pPr"))
             if ppr is not None and ppr.find(qn("w:keepNext")) is None:
                 ppr.insert(0, ppr.makeelement(qn("w:keepNext"), {}))
+        if kind in ("figure", "caption"):  # по центру, без абзацного відступу
+            ppr = el.find(qn("w:pPr"))
+            for tag in ("w:ind", "w:jc"):
+                old = ppr.find(qn(tag))
+                if old is not None:
+                    ppr.remove(old)
+            ppr.append(ppr.makeelement(qn("w:ind"), {qn("w:left"): "0", qn("w:firstLine"): "0"}))
+            ppr.append(ppr.makeelement(qn("w:jc"), {qn("w:val"): "center"}))
         sect.addprevious(el)
+        return el
 
     tables = 0
     for kind, lines in parse(SRC.read_text(encoding="utf-8")):
@@ -116,6 +133,16 @@ def main():
         elif kind == "title":
             add("title", " ".join(l.strip() for l in lines if l.strip()))
             add("blank")
+        elif kind.startswith("equation"):
+            name = kind.split()[1]
+            sect.addprevious(etree.fromstring((EQ / f"{name}.xml").read_bytes()))
+        elif kind == "figure":
+            path, caption = [l.strip() for l in lines if l.strip()]
+            el = add("figure", "")
+            for r in el.findall(qn("w:r")):
+                el.remove(r)
+            Paragraph(el, doc._body).add_run().add_picture(str(ROOT / path), width=Emu(5348614))
+            add("caption", caption)
         elif kind == "heading":
             add("heading", " ".join(l.strip() for l in lines if l.strip()))
         elif kind == "text":
