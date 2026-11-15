@@ -15,7 +15,7 @@
 </g>
 <g text-anchor="middle">
 <text x="125" y="89">Кадр вебкамери</text><text x="125" y="111">(RGB)</text>
-<text x="375" y="78">Ключові точки</text><text x="375" y="100">кисті</text><text x="375" y="122">(MediaPipe Hands)</text>
+<text x="375" y="78">Ключові точки кисті</text><text x="375" y="100">(MediaPipe</text><text x="375" y="122">Hand Landmarker)</text>
 <text x="625" y="89">Фільтрація</text><text x="625" y="111">координат (1€)</text>
 <text x="875" y="78">Ізотропні</text><text x="875" y="100">координати,</text><text x="875" y="122">нормування на s</text>
 <text x="875" y="268">Кінематичні</text><text x="875" y="290">показники</text><text x="875" y="312">φ, Φ, d, O, I</text>
